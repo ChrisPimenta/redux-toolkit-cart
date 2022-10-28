@@ -1,5 +1,5 @@
 import classes from './CartButton.module.css';
-import { cartActions } from '../../store';
+import { cartActions } from '../../store/cart';
 import { useDispatch } from 'react-redux';
 
 const CartButton = (props) => {
