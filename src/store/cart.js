@@ -37,8 +37,7 @@ const cartSlice = createSlice({
                     }
                 )
             } else {
-                // Edit existing cart item
-                console.log('I found an index');
+                // Increment existing cart item
                 const foundElement = state.cartItems[foundIndex];
                 foundElement.quantity++;
                 foundElement.total += foundElement.price;
@@ -56,6 +55,14 @@ const cartSlice = createSlice({
                 // Decrement quanitity
                 state.cartItems[foundIndex].quantity--;
             }
+        },
+        incrementCartItem(state, action) {
+            // Loop through state and see if it exists.
+            const foundIndex = state.cartItems.findIndex((item) => item.id === action.payload.id);
+
+            const foundElement = state.cartItems[foundIndex];
+            foundElement.quantity++;
+            foundElement.total += foundElement.price;
         }
     },
 })
