@@ -6,6 +6,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { uiActions } from './store/ui';
 import Notification from './components/UI/Notification';
 
+let isInitial = true;
+
 function App() {
   const { isCartShown, notification } = useSelector(state => state.ui);
 
@@ -52,6 +54,12 @@ function App() {
           message: error.message
         }))
       }
+    }
+
+    // For first load we do not want to post the cart data
+    if (isInitial) {
+      isInitial = false;
+      return;
     }
 
     sendCartData();
