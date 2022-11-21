@@ -1,16 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { uiActions } from './ui';
 
-const initialCartState = {
-    cartItems: [
-        {
-            id: 1,
-            title: 'Test Item',
-            quantity: 3,
-            price: 6,
-            total: 18
-        }
-    ]
+export const initialCartState = {
+    cartItems: [],
+    totalQuantity: 0
 }
 
 const cartSlice = createSlice({
@@ -60,51 +52,12 @@ const cartSlice = createSlice({
             const foundElement = state.cartItems[foundIndex];
             foundElement.quantity++;
             foundElement.total += foundElement.price;
+        },
+        setCart(state, action) {
+            state.cartItems = action.payload.cartItems;
         }
     },
 })
-
-// Action creator THUNK
-export const sendCartData = (cart) => {
-    return async (dispatch) => {
-        dispatch(uiActions.showNotification({
-            status: 'pending',
-            title: 'Sending...',
-            message: 'Sending Cart data'
-        }))
-
-        try {
-            const response = await fetch('https://react-http2-f5ae2-default-rtdb.europe-west1.firebasedatabase.app/cart.json', {
-                method: 'put',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                //make sure to serialize your JSON body
-                body: JSON.stringify(cart)
-            })
-
-            if (!response.ok) {
-                throw new Error('Failed to send cart data');
-            }
-
-            const responseData = await response.json();
-
-            dispatch(uiActions.showNotification({
-                status: 'success',
-                title: 'Success',
-                message: 'Send data successfully'
-            }))
-
-        } catch (error) {
-            dispatch(uiActions.showNotification({
-                status: 'error',
-                title: 'Error',
-                message: error.message
-            }))
-        }
-    }
-}
 
 export const cartActions = cartSlice.actions;
 export default cartSlice;

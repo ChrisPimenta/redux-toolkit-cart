@@ -1,13 +1,13 @@
 import Cart from './components/Cart/Cart';
-import { Fragment, useEffect } from 'react';
+import { useEffect } from 'react';
 import Layout from './components/Layout/Layout';
 import Products from './components/Shop/Products';
 import { useSelector, useDispatch } from 'react-redux';
-import { uiActions } from './store/ui';
 import Notification from './components/UI/Notification';
-import { sendCartData } from './store/cart';
+import { sendCartData, getCartData } from './store/cart-actions';
 
 let isInitial = true;
+let cartDataGotten = true;
 
 function App() {
   const { isCartShown, notification } = useSelector(state => state.ui);
@@ -23,9 +23,20 @@ function App() {
       return;
     }
 
-    dispatch(sendCartData(cart));
+    // Do not send after first get
+    if (cartDataGotten) {
+      cartDataGotten = false;
+      return;
+    }
 
+    dispatch(sendCartData(cart));
   }, [cart, dispatch])
+
+  // On first load
+  useEffect(() => {
+    dispatch(getCartData());
+    cartDataGotten = true;
+  }, [dispatch])
 
   return (
     <>
