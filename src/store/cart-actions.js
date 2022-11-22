@@ -1,6 +1,6 @@
 
-import { uiActions } from './ui';
-import { cartActions, initialCartState } from './cart'
+import { uiActions } from './ui-slice';
+import { cartActions, initialCartState } from './cart-slice'
 
 // Action creator THUNK
 export const sendCartData = (cart) => {
@@ -15,7 +15,7 @@ export const sendCartData = (cart) => {
             const response = await fetch('https://react-http2-f5ae2-default-rtdb.europe-west1.firebasedatabase.app/cart.json', {
                 method: 'PUT',
                 //make sure to serialize your JSON body
-                body: JSON.stringify(cart)
+                body: JSON.stringify({ cartItems: cart.cartItems, quantity: cart.quantity })
             })
 
             if (!response.ok) {
@@ -55,14 +55,12 @@ export const getCartData = () => {
                 throw new Error('Failed to get cart data');
             }
 
-            let responseData = await response.json();
+            let cartData = await response.json();
 
-            // If we have no items in the cart - like initial load then use initial state
-            if (!responseData?.hasOwnProperty('cartItems') || !responseData?.cartItems) {
-                responseData = initialCartState;
-            }
-
-            dispatch(cartActions.setCart(responseData));
+            dispatch(cartActions.setCart({
+                cartItems: cartData.cartItems || [],
+                totalQuantity: cartData.totalQuantity
+            }));
 
             dispatch(uiActions.showNotification({
                 status: 'success',

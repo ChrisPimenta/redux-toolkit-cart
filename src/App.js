@@ -7,7 +7,6 @@ import Notification from './components/UI/Notification';
 import { sendCartData, getCartData } from './store/cart-actions';
 
 let isInitial = true;
-let cartDataGotten = true;
 
 function App() {
   const { isCartShown, notification } = useSelector(state => state.ui);
@@ -23,19 +22,17 @@ function App() {
       return;
     }
 
-    // Do not send after first get
-    if (cartDataGotten) {
-      cartDataGotten = false;
-      return;
+    // Only post cart data on change - not on first read
+    if (cart.changed) {
+      dispatch(sendCartData(cart));
     }
 
-    dispatch(sendCartData(cart));
+
   }, [cart, dispatch])
 
   // On first load
   useEffect(() => {
     dispatch(getCartData());
-    cartDataGotten = true;
   }, [dispatch])
 
   return (

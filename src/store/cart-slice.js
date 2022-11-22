@@ -2,7 +2,8 @@ import { createSlice } from '@reduxjs/toolkit';
 
 export const initialCartState = {
     cartItems: [],
-    totalQuantity: 0
+    totalQuantity: 0,
+    changed: false
 }
 
 const cartSlice = createSlice({
@@ -31,6 +32,10 @@ const cartSlice = createSlice({
                 foundElement.quantity++;
                 foundElement.total += foundElement.price;
             }
+
+            state.totalQuantity = state.totalQuantity++;
+
+            state.changed = true;
         },
         removeFromCart(state, action) {
             // Loop through state and see if it exists.
@@ -44,6 +49,10 @@ const cartSlice = createSlice({
                 // Decrement quanitity
                 state.cartItems[foundIndex].quantity--;
             }
+
+            state.totalQuantity = state.totalQuantity--;
+
+            state.changed = true;
         },
         incrementCartItem(state, action) {
             // Loop through state and see if it exists.
